@@ -1,3 +1,9 @@
+package jv.proxy.http;
+
+import jv.proxy.utils.BlockedAddresses;
+import jv.proxy.utils.ErrorPage;
+import jv.proxy.utils.ServerPrinter;
+
 import java.io.*;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
@@ -70,7 +76,7 @@ public class HTTPRequest {
                 if (line.contains("Host:")) {
                     ServerPrinter.print(Thread.currentThread().getId(), "         " + line + " ...");
                 }
-//            ServerPrinter.print(Thread.currentThread().getId(), "         " + line + " ...");
+//            jv.proxy.utils.ServerPrinter.print(Thread.currentThread().getId(), "         " + line + " ...");
                 send(line, outputStream);
             }
             send("", outputStream);

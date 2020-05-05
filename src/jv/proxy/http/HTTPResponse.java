@@ -1,3 +1,7 @@
+package jv.proxy.http;
+
+import jv.proxy.utils.ServerPrinter;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;

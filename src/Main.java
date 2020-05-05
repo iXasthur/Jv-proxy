@@ -1,3 +1,7 @@
+import jv.proxy.ProxyThread;
+import jv.proxy.utils.BlockedAddresses;
+import jv.proxy.utils.ErrorPage;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;

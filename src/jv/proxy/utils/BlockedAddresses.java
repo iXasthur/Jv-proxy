@@ -1,7 +1,7 @@
+package jv.proxy.utils;
+
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Scanner;
 import java.util.Vector;
 
