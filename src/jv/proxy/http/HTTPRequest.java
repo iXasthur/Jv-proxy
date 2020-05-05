@@ -50,7 +50,7 @@ public class HTTPRequest {
 
             lines.set(0, requestLine);
 
-//            lines.add("Connection: close");
+            lines.add("Connection: close");
 
             for (int i = 0; i < lines.size(); i++) {
                 if (lines.elementAt(i).contains("Accept-Encoding:")) {
