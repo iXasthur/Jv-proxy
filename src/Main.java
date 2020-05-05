@@ -5,8 +5,6 @@ import java.net.Socket;
 
 public class Main {
 
-    public static DataOutputStream browserOutputStream = null;
-
     public static void main(String[] args) {
 
         int port = 8080;
