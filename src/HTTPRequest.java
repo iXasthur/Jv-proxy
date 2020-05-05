@@ -51,24 +51,28 @@ public class HTTPRequest {
         }
     }
 
-    public HTTPResponse sendToHost() throws IOException {
+    synchronized public HTTPResponse sendToHost() throws IOException {
 
         InetAddress address = InetAddress.getByName(host);
 
         Socket socket = new Socket(address, port);
         DataOutputStream outputStream = new DataOutputStream(socket.getOutputStream());
-        BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+//        BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        DataInputStream inputStream = new DataInputStream(socket.getInputStream());
 
         for (String line : lines) {
             System.out.println("REQ > " + line);
-            outputStream.writeBytes(line + "\r\n");
-            outputStream.flush();
+            send(line, outputStream);
         }
         System.out.println("REQ > ");
-        outputStream.writeBytes("\r\n");
-        outputStream.flush();
+        send("", outputStream);
 
-        return new HTTPResponse(reader, outputStream, socket);
+        return new HTTPResponse(inputStream, outputStream, socket);
+    }
+
+    synchronized private void send(String line, DataOutputStream stream) throws IOException {
+        stream.writeBytes(line + "\r\n");
+        stream.flush();
     }
 
     public Vector<String> getLines() {

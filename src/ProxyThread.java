@@ -6,7 +6,7 @@ import java.net.Socket;
 
 public class ProxyThread extends Thread {
 
-    private Socket socket;
+    private final Socket socket;
 
     public ProxyThread(Socket socket) {
         this.socket = socket;
@@ -16,11 +16,8 @@ public class ProxyThread extends Thread {
     public void run() {
         super.run();
 
-        try {
-            // Browser -> Proxy
-            BufferedReader reader = new BufferedReader(new InputStreamReader((socket.getInputStream())));
-            // Proxy -> Browser
-            DataOutputStream outputStream = new DataOutputStream(socket.getOutputStream());
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader((socket.getInputStream())));
+             DataOutputStream outputStream = new DataOutputStream(socket.getOutputStream())) {
 
             HTTPRequest request = new HTTPRequest(reader);
 
@@ -29,18 +26,15 @@ public class ProxyThread extends Thread {
                 response.sendToBrowser(outputStream);
             }
 
-            reader.close();
-            outputStream.close();
-
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        try {
-            socket.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            socket.close();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
 
     }
 }
