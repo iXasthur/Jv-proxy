@@ -10,7 +10,20 @@ public class Main {
 
     public static void main(String[] args) {
 
-        int port = 8080;
+        // Set 8080 as default value in IDE
+
+        if (args.length != 1) {
+            System.out.println("Invalid args. Args: <port>");
+            return;
+        }
+
+        int port;
+        try {
+            port = Integer.parseInt(args[0]);
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid args. Args: <port>");
+            return;
+        }
 
         // The Java runtime automatically closes the input and output streams, the client socket,
         // and the server socket because they have been created in the try-with-resources statement.
