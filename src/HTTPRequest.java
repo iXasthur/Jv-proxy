@@ -14,10 +14,9 @@ public class HTTPRequest {
         while ((requestLine = reader.readLine()) != null && !requestLine.equals("")) {
             lines.add(requestLine);
         }
-        fixRequestLine();
     }
 
-    private void fixRequestLine() {
+    public void fixRequestLine() {
         if (lines.size() > 0) {
             String requestLine = lines.elementAt(0);
 
@@ -41,7 +40,7 @@ public class HTTPRequest {
 
             lines.set(0, requestLine);
 
-//            lines.add("Connection: close");
+            lines.add("Connection: close");
 
             for (int i = 0; i < lines.size(); i++) {
                 if (lines.elementAt(i).contains("Accept-Encoding:")) {
@@ -51,26 +50,31 @@ public class HTTPRequest {
         }
     }
 
-    synchronized public HTTPResponse sendToHost() throws IOException {
+    public HTTPResponse sendToHost() throws IOException {
+
+        // Check for blocked address
 
         InetAddress address = InetAddress.getByName(host);
 
         Socket socket = new Socket(address, port);
         DataOutputStream outputStream = new DataOutputStream(socket.getOutputStream());
-//        BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         DataInputStream inputStream = new DataInputStream(socket.getInputStream());
 
+        ServerPrinter.print(Thread.currentThread().getId(), " Sending " + lines.elementAt(0));
+
         for (String line : lines) {
-            System.out.println("REQ > " + line);
+            if (line.contains("Host:")) {
+                ServerPrinter.print(Thread.currentThread().getId(), "         " + line + " ...");
+            }
+//            ServerPrinter.print(Thread.currentThread().getId(), "         " + line + " ...");
             send(line, outputStream);
         }
-        System.out.println("REQ > ");
         send("", outputStream);
 
         return new HTTPResponse(inputStream, outputStream, socket);
     }
 
-    synchronized private void send(String line, DataOutputStream stream) throws IOException {
+    private void send(String line, DataOutputStream stream) throws IOException {
         stream.writeBytes(line + "\r\n");
         stream.flush();
     }
@@ -86,56 +90,4 @@ public class HTTPRequest {
         }
         return "";
     }
-
-    //    public void printInfo(){
-//        System.out.println();
-//        System.out.println("Request: " + requestLine);
-//        System.out.println(" Method: " + method);
-//        System.out.println("   Path: " + path);
-//        System.out.println("   Host: " + host);
-//        System.out.println("   Port: " + port);
-//        System.out.println("Version: " + version);
-//    }
-
-
-//    Socket socket;
-//    DataOutputStream outputStream;
-//    BufferedReader reader;
-
-
-//    HTTPResponse getResponse() throws Exception {
-//
-//
-//        // 1. Get host address using DNS and connect
-//
-//        InetAddress address = InetAddress.getByName((headers.get("Host")));
-//
-//        System.out.println("REQ: Connecting to " + address);
-//
-//        socket = new Socket(address, port);
-//        outputStream = new DataOutputStream(socket.getOutputStream());
-//        reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-//
-//        // 2. Send request
-//
-//        write(method + " " + path + " " + version);
-//
-//        for(String key : headers.keySet()) {
-//            write(key + ": " + headers.get(key));
-//        }
-//
-//        write("");
-//
-//        // 3. Read response
-//
-//        HTTPResponse response = new HTTPResponse(reader);
-//
-//        return response;
-//    }
-//
-//    private void write (String line) throws Exception {
-//        System.out.println("REQ > " + line);
-//        outputStream.writeBytes(line + "\r\n");
-//        outputStream.flush();
-//    }
 }

@@ -22,19 +22,25 @@ public class ProxyThread extends Thread {
             HTTPRequest request = new HTTPRequest(reader);
 
             if (request.getRequestMethod().equals("GET")) {
+                String requestLine = request.getLines().elementAt(0);
+                ServerPrinter.print(Thread.currentThread().getId(), "Received " + requestLine);
+                request.fixRequestLine();
+
                 HTTPResponse response = request.sendToHost();
                 response.sendToBrowser(outputStream);
             }
 
         } catch (IOException e) {
+            // User closed browser tab
+//            e.printStackTrace();
+        }
+
+        try {
+            socket.close();
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
-//        try {
-//            socket.close();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-
     }
+
 }
