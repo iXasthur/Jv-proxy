@@ -24,15 +24,23 @@ public class ProxyThread extends Thread {
             if (request.getRequestMethod().equals("GET")) {
                 String requestLine = request.getLines().elementAt(0);
                 ServerPrinter.print(Thread.currentThread().getId(), "Received " + requestLine);
+                for (String line : request.getLines()) {
+                    if (line.contains("Host:")) {
+                        ServerPrinter.print(Thread.currentThread().getId(), "         " + line + " ...");
+                    }
+                }
                 request.fixRequestLine();
 
                 HTTPResponse response = request.sendToHost();
-                response.sendToBrowser(outputStream);
+                try {
+                    response.sendToBrowser(outputStream);
+                } finally {
+                    response.closeStreams();
+                }
             }
 
         } catch (IOException e) {
             // User closed browser tab
-//            e.printStackTrace();
         }
 
         try {

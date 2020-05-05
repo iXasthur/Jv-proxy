@@ -22,6 +22,12 @@ public class Main {
 //                }
 //            }));
 
+            System.out.println("Blocked addresses:");
+            BlockedAddresses.update();
+            BlockedAddresses.printBlockedAddresses();
+
+            ErrorPage.load();
+
             System.out.println("Created proxy server on localhost:" + port);
 
             while (true) {

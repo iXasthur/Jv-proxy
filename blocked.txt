@@ -1,0 +1,3 @@
+example.net
+example.net/favicon.ico
+president.gov.by

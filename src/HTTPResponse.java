@@ -1,7 +1,6 @@
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.net.Socket;
 import java.util.Arrays;
 import java.util.Scanner;
@@ -18,7 +17,7 @@ public class HTTPResponse {
         this.socket = socket;
     }
 
-    private String extractResponse(byte[] bytes, int count) {
+    private String extractResponseResult(byte[] bytes, int count) {
         byte[] buffBytes = Arrays.copyOf(bytes, count);
         String buffString = new String(buffBytes);
         Scanner scanner = new Scanner(buffString);
@@ -33,14 +32,22 @@ public class HTTPResponse {
     public void sendToBrowser(DataOutputStream browserOutputStream) throws IOException {
         byte[] buffer = new byte[1024];
         int count = inputStream.read(buffer);
-        ServerPrinter.print(Thread.currentThread().getId(), "Received " + extractResponse(buffer, count));
+        ServerPrinter.print(Thread.currentThread().getId(), "Response " + extractResponseResult(buffer, count));
+        ServerPrinter.print(Thread.currentThread().getId(), "         " + "Sending data to browser");
         while (count != -1) {
             send(buffer, count, browserOutputStream);
             count = inputStream.read(buffer);
         }
+    }
+
+    public void closeStreams() throws IOException {
         inputStream.close();
-        serverOutputStream.close();
-        socket.close();
+        if (serverOutputStream != null) {
+            serverOutputStream.close();
+        }
+        if (socket != null) {
+            socket.close();
+        }
     }
 
     private void send(byte[] bytes, int count, DataOutputStream stream) throws IOException {
