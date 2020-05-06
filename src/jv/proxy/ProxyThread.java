@@ -27,7 +27,7 @@ public class ProxyThread extends Thread {
 
             HTTPRequest request = new HTTPRequest(reader);
 
-            if (request.getRequestMethod().equals("GET")) {
+            if (!request.getRequestMethod().equals("CONNECT")) {
                 String requestLine = request.getLines().elementAt(0);
                 ServerPrinter.print(Thread.currentThread().getId(), "Received " + requestLine);
                 for (String line : request.getLines()) {
